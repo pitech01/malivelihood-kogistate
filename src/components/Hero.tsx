@@ -1,6 +1,7 @@
 
 import heroBg from '../assets/hero-luxury.png';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
     return (
@@ -96,9 +97,9 @@ const Hero = () => {
                     className="hero-buttons"
                     style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}
                 >
-                    <a href="#apply" className="btn btn-primary" style={{ padding: '1.2rem 3rem', fontSize: '1rem' }}>
+                    <Link to="/application" className="btn btn-primary" style={{ padding: '1.2rem 3rem', fontSize: '1rem' }}>
                         Apply Now
-                    </a>
+                    </Link>
 
                 </motion.div>
             </div>

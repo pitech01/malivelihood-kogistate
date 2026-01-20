@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom';
 import logo from '../assets/malivelihood_kogi_logo.png';
 
 const Footer = () => {
@@ -11,9 +12,9 @@ const Footer = () => {
                     <h2 className="title-md" style={{ marginBottom: 0, fontSize: 'clamp(2rem, 3vw, 2.5rem)' }}>
                         Ready to Shape the Future?
                     </h2>
-                    <a href="#apply" className="btn btn-primary" style={{ background: 'white', color: 'black', border: 'none' }}>
+                    <Link to="/application" className="btn btn-primary" style={{ background: 'white', color: 'black', border: 'none' }}>
                         Apply Now
-                    </a>
+                    </Link>
                 </div>
             </div>
 

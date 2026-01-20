@@ -1,5 +1,6 @@
 
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Apply = () => {
     return (
@@ -102,9 +103,9 @@ const Apply = () => {
                     transition={{ duration: 0.8, delay: 0.8 }}
                     style={{ marginTop: '4rem', textAlign: 'center' }}
                 >
-                    <button className="btn btn-primary" style={{ padding: '1.5rem 4rem', fontSize: '1.2rem' }}>
+                    <Link to="/application" className="btn btn-primary" style={{ padding: '1.5rem 4rem', fontSize: '1.2rem', display: 'inline-block' }}>
                         Launch Application Portal
-                    </button>
+                    </Link>
                     <div style={{ marginTop: '1.5rem', opacity: 0.6 }}>
                         <span style={{ marginRight: '1rem' }}>📄 Requires: Valid ID</span>
                         <span>📍 Requires: Kogi Indigene Proof</span>
