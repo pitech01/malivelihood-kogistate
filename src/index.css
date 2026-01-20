@@ -1,11 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
+/* Added serif font for luxury headings */
 
 :root {
-  --bg-color: #000000;
+  --bg-color: #050505;
+  /* Rich black */
   --text-color: #ffffff;
   --accent-color: #ffffff;
-  --gray-color: #333333;
+  --gray-color: #1a1a1a;
   --font-main: 'Inter', sans-serif;
+  --font-luxury: 'Cinzel', serif;
 }
 
 * {
@@ -14,11 +18,15 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-main);
   background-color: var(--bg-color);
   color: var(--text-color);
-  line-height: 1.6;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   width: 100%;
 }
@@ -26,11 +34,11 @@ body {
 a {
   text-decoration: none;
   color: inherit;
-  transition: opacity 0.3s;
+  transition: all 0.4s ease;
 }
 
 a:hover {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 button {
@@ -42,60 +50,77 @@ button {
 
 /* Utilities */
 .container {
-  max-width: 1400px;
+  max-width: 1600px;
+  /* Wider for majestic feel */
   margin: 0 auto;
   padding: 0 5%;
 }
 
 .section {
-  padding: 100px 0;
-  border-bottom: 1px solid #1a1a1a;
+  padding: 120px 0;
+  /* More breathing room */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* Subtle border */
   position: relative;
 }
 
+/* Typography Overhaul */
 .title-lg {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 800;
+  font-family: var(--font-luxury);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 400;
+  /* Lighter weight for elegance */
   line-height: 1.1;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
 .title-md {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
+  font-family: var(--font-luxury);
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 400;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   line-height: 1.2;
 }
 
 .title-sm {
-  font-size: 1.25rem;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.15em;
+  /* Tracking out for premium look */
+  opacity: 0.8;
 }
 
 .text-lead {
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  color: #bbb;
-  margin-bottom: 2rem;
-  max-width: 800px;
-  line-height: 1.6;
+  font-family: var(--font-main);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 300;
+  /* Light weight body text */
+  color: #d0d0d0;
+  margin-bottom: 2.5rem;
+  max-width: 850px;
+  line-height: 1.8;
 }
 
+/* Luxury Buttons */
 .btn {
   display: inline-block;
-  padding: 1rem 2.5rem;
-  font-weight: 700;
+  padding: 1.2rem 3rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: all 0.3s ease;
+  letter-spacing: 0.15em;
+  transition: all 0.5s ease;
   border: 1px solid var(--text-color);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .btn-primary {
@@ -118,19 +143,31 @@ button {
   color: var(--bg-color);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Form Styles */
+input,
+textarea {
+  transition: border-color 0.3s ease;
 }
 
-.fade-in {
-  animation: fadeIn 0.8s ease forwards;
+input:focus,
+textarea:focus {
+  border-color: #fff !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

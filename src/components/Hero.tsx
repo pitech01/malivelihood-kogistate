@@ -1,5 +1,5 @@
 
-import heroBg from '../assets/hero.png';
+import heroBg from '../assets/hero-luxury.png';
 import { motion } from 'framer-motion';
 
 const Hero = () => {

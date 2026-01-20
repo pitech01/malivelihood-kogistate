@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.png';
 
 const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     const [isFading, setIsFading] = useState(false);
