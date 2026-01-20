@@ -10,7 +10,7 @@ const Hero = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center', // Center content for Activizm style
-            paddingTop: '80px',
+            paddingTop: '160px',
             overflow: 'hidden'
         }}>
             {/* Background Image with Slow Zoom (Ken Burns Effect) */}

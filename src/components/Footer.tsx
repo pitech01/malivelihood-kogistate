@@ -1,5 +1,5 @@
 
-import logo from '../assets/logo.png';
+import logo from '../assets/malivelihood_kogi_logo.png';
 
 const Footer = () => {
     return (
@@ -25,7 +25,7 @@ const Footer = () => {
                     {/* Column 1: Brand & Mission */}
                     <div>
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <img src={logo} alt="Malivelihood | Kogi State" style={{ height: '60px', objectFit: 'contain' }} />
+                            <img src={logo} alt="Malivelihood | Kogi State" style={{ height: '90px', objectFit: 'contain' }} />
                         </div>
                         <p style={{ color: '#888', lineHeight: '1.8', marginBottom: '2rem' }}>
                             A pioneering partnership designed to transform the mining and jewelry sector through youth empowerment, ethical practices, and global craftsmanship standards.

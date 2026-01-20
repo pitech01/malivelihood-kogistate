@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../assets/logo.png';
+import logo from '../assets/malivelihood_kogi_logo.png';
 
 const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     const [isFading, setIsFading] = useState(false);
@@ -36,7 +36,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
                 marginBottom: '2rem',
                 animation: 'pulse 2s infinite ease-in-out'
             }}>
-                <img src={logo} alt="Loading..." style={{ width: '150px', height: 'auto' }} />
+                <img src={logo} alt="Loading..." style={{ width: '250px', height: 'auto' }} />
             </div>
 
             {/* Classic Thin Line Loader */}
