@@ -33,10 +33,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
+        {/* Mobile Toggle */}
         <div className="mobile-toggle" onClick={toggleMenu}>
-          <div style={{ width: '25px', height: '2px', background: 'white', marginBottom: '5px' }}></div>
-          <div style={{ width: '25px', height: '2px', background: 'white', marginBottom: '5px' }}></div>
-          <div style={{ width: '25px', height: '2px', background: 'white' }}></div>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
 

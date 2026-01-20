@@ -99,9 +99,7 @@ const Hero = () => {
                     <a href="#apply" className="btn btn-primary" style={{ padding: '1.2rem 3rem', fontSize: '1rem' }}>
                         Apply Now
                     </a>
-                    <a href="#" className="btn btn-outline" style={{ padding: '1.2rem 3rem', fontSize: '1rem' }}>
-                        Download Brochure
-                    </a>
+
                 </motion.div>
             </div>
         </section >

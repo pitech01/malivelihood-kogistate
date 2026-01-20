@@ -12,7 +12,8 @@ const Eligibility = () => {
                             "Be between 18 and 35 years of age",
                             "Demonstrate interest in mining, jewelry, or craftsmanship",
                             "Be available for the full training duration",
-                            "Be willing to comply with programme rules and standards"
+                            "Be willing to comply with programme rules and standards",
+                            "Must provide certificate of local Government origin in Kogi State"
                         ].map((item, index) => (
                             <li key={index} style={{
                                 padding: '1rem',

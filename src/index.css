@@ -322,15 +322,37 @@ textarea:focus {
   z-index: 999;
 }
 
+
+/* Hamburger Menu Styling */
+.mobile-toggle span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: white;
+  margin-bottom: 5px;
+  transition: all 0.3s ease;
+}
+
+.mobile-toggle span:last-child {
+  margin-bottom: 0;
+}
+
 /* Mobile Menu Styles */
 @media (max-width: 768px) {
   .navbar {
     padding: 0.8rem 0;
   }
 
+  /* Tighter container padding to bring hamburger closer */
+  .container {
+    padding: 0 1.5rem;
+  }
+
   /* Smaller logo on mobile */
   .navbar-logo {
     height: 50px;
+    /* Reduced from 70px to reasonable mobile size */
+    max-width: 100%;
   }
 
   .desktop-menu {
@@ -342,7 +364,7 @@ textarea:focus {
   }
 
   .mobile-menu-overlay {
-    top: 80px;
-    height: calc(100vh - 80px);
+    top: 70px;
+    height: calc(100vh - 70px);
   }
 }
