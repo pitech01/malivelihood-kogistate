@@ -5,12 +5,12 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     const [isFading, setIsFading] = useState(false);
 
     useEffect(() => {
-        // Wait for 2 seconds then fadeOut
+        // Wait for 1.2 seconds then fadeOut
         const timer = setTimeout(() => {
             setIsFading(true);
             // Wait for fade animation to finish before unmounting
             setTimeout(onComplete, 800);
-        }, 2000);
+        }, 1200);
 
         return () => clearTimeout(timer);
     }, [onComplete]);
@@ -60,9 +60,9 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
 
             <style>{`
         @keyframes pulse {
-          0% { opacity: 0.5; transform: scale(0.98); }
-          50% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0.5; transform: scale(0.98); }
+          0% { opacity: 1; transform: scale(0.98); }
+          50% { opacity: 1; transform: scale(1.02); }
+          100% { opacity: 1; transform: scale(0.98); }
         }
         @keyframes slide {
           0% { left: -50%; }
