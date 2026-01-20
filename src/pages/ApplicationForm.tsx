@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Preloader from '../components/Preloader';
+import Toast from '../components/Toast';
 import logo from '../assets/malivelihood_kogi_logo.png';
 
 const ApplicationForm = () => {
@@ -9,7 +10,24 @@ const ApplicationForm = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [referenceId, setReferenceId] = useState('');
     const [step, setStep] = useState(1);
+
+    // Toast State
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning'; isVisible: boolean }>({
+        message: '',
+        type: 'error',
+        isVisible: false
+    });
+
+    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'error') => {
+        setToast({ message, type, isVisible: true });
+    };
+
+    const closeToast = () => {
+        setToast(prev => ({ ...prev, isVisible: false }));
+    };
+
     const [formData, setFormData] = useState({
         // Section A
         fullName: '',
@@ -68,8 +86,74 @@ const ApplicationForm = () => {
         });
     };
 
-    const nextStep = () => setStep(prev => prev + 1);
-    const prevStep = () => setStep(prev => prev - 1);
+    const validateStep = (currentStep: number) => {
+        const d = formData;
+        switch (currentStep) {
+            case 1: // Personal Info
+                if (!d.fullName || !d.gender || !d.dob || !d.phone || !d.email || !d.address || !d.lga || !d.stateOrigin || !d.nationality) {
+                    showToast("Please fill in all personal information fields.", "warning");
+                    return false;
+                }
+                return true;
+            case 2: // Indigene
+                if (!d.isIndigene) {
+                    showToast("Please select your indigene status.", "warning");
+                    return false;
+                }
+                if (d.isIndigene === 'Yes' && (!d.indigeneLga || !d.verificationMethod)) {
+                    showToast("Please provide LGA and verification method.", "warning");
+                    return false;
+                }
+                return true;
+            case 3: // Education
+                if (!d.educationLevel || !d.institution || !d.graduationYear) {
+                    showToast("Please fill in your primary education details.", "warning");
+                    return false;
+                }
+                return true;
+            case 4: // Experience
+                if (!d.hasExperience || !d.skills) {
+                    showToast("Please answer experience question and list your skills.", "warning");
+                    return false;
+                }
+                if (d.hasExperience === 'Yes' && !d.experienceDesc) {
+                    showToast("Please describe your experience.", "warning");
+                    return false;
+                }
+                return true;
+            case 5: // Essay
+                if (!d.essay || d.essay.length < 50) {
+                    showToast("Please write a motivation essay (at least 50 chars).", "warning");
+                    return false;
+                }
+                return true;
+            case 6: // Availability
+                if (!d.available || !d.comply || !d.relocate) {
+                    showToast("Please answer all commitment questions.", "warning");
+                    return false;
+                }
+                return true;
+            case 9: // Declaration (Submit handled separately but good to check)
+                if (!d.declarationName || !d.declarationDate) {
+                    showToast("Please sign and date the declaration.", "warning");
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    };
+
+    const nextStep = () => {
+        if (validateStep(step)) {
+            setStep(prev => prev + 1);
+            window.scrollTo(0, 0);
+        }
+    };
+    const prevStep = () => {
+        setStep(prev => prev - 1);
+        window.scrollTo(0, 0);
+    };
 
     const totalSteps = 9;
 
@@ -81,48 +165,48 @@ const ApplicationForm = () => {
                         <h2 className="title-md">Section A: Personal Information</h2>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Full Name (Surname First)</label>
-                                <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Doe John" />
+                                <label>Full Name (Surname First) <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Doe John" required />
                             </div>
                             <div className="form-group">
-                                <label>Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange}>
+                                <label>Gender <span style={{ color: 'red' }}>*</span></label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} required>
                                     <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>Date of Birth</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+                                <label>Date of Birth <span style={{ color: 'red' }}>*</span></label>
+                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
                                 <label>Age</label>
                                 <input type="number" name="age" value={formData.age} readOnly placeholder="Auto-calculated" />
                             </div>
                             <div className="form-group">
-                                <label>Phone Number (WhatsApp)</label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+234..." />
+                                <label>Phone Number (WhatsApp) <span style={{ color: 'red' }}>*</span></label>
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+234..." required />
                             </div>
                             <div className="form-group">
-                                <label>Email Address</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="email@example.com" />
+                                <label>Email Address <span style={{ color: 'red' }}>*</span></label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="email@example.com" required />
                             </div>
                             <div className="form-group full-width">
-                                <label>Residential Address</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} rows={2}></textarea>
+                                <label>Residential Address <span style={{ color: 'red' }}>*</span></label>
+                                <textarea name="address" value={formData.address} onChange={handleChange} rows={2} required></textarea>
                             </div>
                             <div className="form-group">
-                                <label>LGA of Origin (Kogi)</label>
-                                <input type="text" name="lga" value={formData.lga} onChange={handleChange} />
+                                <label>LGA of Origin (Kogi) <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="lga" value={formData.lga} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>State of Origin</label>
-                                <input type="text" name="stateOrigin" value={formData.stateOrigin} onChange={handleChange} />
+                                <label>State of Origin <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="stateOrigin" value={formData.stateOrigin} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>Nationality</label>
-                                <input type="text" name="nationality" value={formData.nationality} onChange={handleChange} />
+                                <label>Nationality <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="nationality" value={formData.nationality} onChange={handleChange} required />
                             </div>
                         </div>
                     </motion.div>
@@ -133,21 +217,25 @@ const ApplicationForm = () => {
                         <h2 className="title-md">Section B: Kogi State Indigene Verification</h2>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Are you an indigene of Kogi State?</label>
-                                <select name="isIndigene" value={formData.isIndigene} onChange={handleChange}>
+                                <label>Are you an indigene of Kogi State? <span style={{ color: 'red' }}>*</span></label>
+                                <select name="isIndigene" value={formData.isIndigene} onChange={handleChange} required>
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
                             </div>
-                            <div className="form-group">
-                                <label>Please state your LGA clearly</label>
-                                <input type="text" name="indigeneLga" value={formData.indigeneLga} onChange={handleChange} />
-                            </div>
-                            <div className="form-group full-width">
-                                <label>How can your status be verified?</label>
-                                <input type="text" name="verificationMethod" value={formData.verificationMethod} onChange={handleChange} placeholder="e.g. Certificate, Letter of Origin" />
-                            </div>
+                            {formData.isIndigene === 'Yes' && (
+                                <>
+                                    <div className="form-group">
+                                        <label>Please state your LGA clearly <span style={{ color: 'red' }}>*</span></label>
+                                        <input type="text" name="indigeneLga" value={formData.indigeneLga} onChange={handleChange} required />
+                                    </div>
+                                    <div className="form-group full-width">
+                                        <label>How can your status be verified? <span style={{ color: 'red' }}>*</span></label>
+                                        <input type="text" name="verificationMethod" value={formData.verificationMethod} onChange={handleChange} placeholder="e.g. Certificate, Letter of Origin" required />
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 );
@@ -157,8 +245,8 @@ const ApplicationForm = () => {
                         <h2 className="title-md">Section C: Educational Background</h2>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Highest Level of Education</label>
-                                <select name="educationLevel" value={formData.educationLevel} onChange={handleChange}>
+                                <label>Highest Level of Education <span style={{ color: 'red' }}>*</span></label>
+                                <select name="educationLevel" value={formData.educationLevel} onChange={handleChange} required>
                                     <option value="">Select Level</option>
                                     <option value="Secondary School">Secondary School</option>
                                     <option value="OND / NCE">OND / NCE</option>
@@ -167,16 +255,16 @@ const ApplicationForm = () => {
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>Name of Institution Attended</label>
-                                <input type="text" name="institution" value={formData.institution} onChange={handleChange} />
+                                <label>Name of Institution Attended <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="institution" value={formData.institution} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
                                 <label>Field of Study (if applicable)</label>
                                 <input type="text" name="fieldOfStudy" value={formData.fieldOfStudy} onChange={handleChange} />
                             </div>
                             <div className="form-group">
-                                <label>Year of Graduation</label>
-                                <input type="text" name="graduationYear" value={formData.graduationYear} onChange={handleChange} />
+                                <label>Year of Graduation <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="graduationYear" value={formData.graduationYear} onChange={handleChange} required />
                             </div>
                         </div>
                     </motion.div>
@@ -187,23 +275,25 @@ const ApplicationForm = () => {
                         <h2 className="title-md">Section D: Work Experience & Skills</h2>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Prior Experience in Mining/Jewelry?</label>
-                                <select name="hasExperience" value={formData.hasExperience} onChange={handleChange}>
+                                <label>Prior Experience in Mining/Jewelry? <span style={{ color: 'red' }}>*</span></label>
+                                <select name="hasExperience" value={formData.hasExperience} onChange={handleChange} required>
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
                             </div>
+                            {formData.hasExperience === 'Yes' && (
+                                <div className="form-group full-width">
+                                    <label>Describe Experience <span style={{ color: 'red' }}>*</span></label>
+                                    <textarea name="experienceDesc" value={formData.experienceDesc} onChange={handleChange} rows={3} required></textarea>
+                                </div>
+                            )}
                             <div className="form-group full-width">
-                                <label>Describe Experience (Max 150 words)</label>
-                                <textarea name="experienceDesc" value={formData.experienceDesc} onChange={handleChange} rows={3}></textarea>
+                                <label>Relevant Skills (Technical/Creative) <span style={{ color: 'red' }}>*</span></label>
+                                <textarea name="skills" value={formData.skills} onChange={handleChange} rows={2} required></textarea>
                             </div>
                             <div className="form-group full-width">
-                                <label>Relevant Skills (Technical/Creative)</label>
-                                <textarea name="skills" value={formData.skills} onChange={handleChange} rows={2}></textarea>
-                            </div>
-                            <div className="form-group full-width">
-                                <label>Prior Vocational Training</label>
+                                <label>Prior Vocational Training (Optional)</label>
                                 <input type="text" name="vocationalTraining" value={formData.vocationalTraining} onChange={handleChange} placeholder="Specify if any" />
                             </div>
                         </div>
@@ -214,7 +304,7 @@ const ApplicationForm = () => {
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="form-step">
                         <h2 className="title-md">Section E: Motivation Essay</h2>
                         <div className="form-group full-width">
-                            <label>Personal Statement (250-500 words)</label>
+                            <label>Personal Statement (250-500 words) <span style={{ color: 'red' }}>*</span></label>
                             <p className="field-hint">Tell us who you are, why you want to join, and how you will use these skills.</p>
                             <textarea
                                 name="essay"
@@ -223,6 +313,7 @@ const ApplicationForm = () => {
                                 rows={10}
                                 style={{ minHeight: '300px' }}
                                 placeholder="Write your essay here..."
+                                required
                             ></textarea>
                         </div>
                     </motion.div>
@@ -233,24 +324,24 @@ const ApplicationForm = () => {
                         <h2 className="title-md">Section F: Availability & Commitment</h2>
                         <div className="form-grid">
                             <div className="form-group full-width">
-                                <label>Are you available for the entire duration?</label>
-                                <select name="available" value={formData.available} onChange={handleChange}>
+                                <label>Are you available for the entire duration? <span style={{ color: 'red' }}>*</span></label>
+                                <select name="available" value={formData.available} onChange={handleChange} required>
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
                             </div>
                             <div className="form-group full-width">
-                                <label>Will you comply with all rules & assessments?</label>
-                                <select name="comply" value={formData.comply} onChange={handleChange}>
+                                <label>Will you comply with all rules & assessments? <span style={{ color: 'red' }}>*</span></label>
+                                <select name="comply" value={formData.comply} onChange={handleChange} required>
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
                             </div>
                             <div className="form-group full-width">
-                                <label>Are you open to relocation if required?</label>
-                                <select name="relocate" value={formData.relocate} onChange={handleChange}>
+                                <label>Are you open to relocation if required? <span style={{ color: 'red' }}>*</span></label>
+                                <select name="relocate" value={formData.relocate} onChange={handleChange} required>
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
@@ -267,9 +358,9 @@ const ApplicationForm = () => {
 
                         <div className="form-grid">
                             {[
-                                { label: "Valid Identification (ID/Passport/Voter's Card)", accept: ".pdf,.jpg,.jpeg,.png" },
-                                { label: "Proof of Kogi State Indigene Status", accept: ".pdf,.jpg,.jpeg,.png" },
-                                { label: "Recent Passport Photograph", accept: ".jpg,.jpeg,.png" },
+                                { label: "Valid Identification (ID/Passport/Voter's Card) *", accept: ".pdf,.jpg,.jpeg,.png" },
+                                { label: "Proof of Kogi State Indigene Status *", accept: ".pdf,.jpg,.jpeg,.png" },
+                                { label: "Recent Passport Photograph *", accept: ".jpg,.jpeg,.png" },
                                 { label: "Curriculum Vitae (Optional)", accept: ".pdf,.doc,.docx" }
                             ].map((doc, idx) => (
                                 <div className="form-group" key={idx}>
@@ -292,7 +383,7 @@ const ApplicationForm = () => {
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="form-step">
                         <h2 className="title-md">Section H: Video Submission</h2>
                         <div className="form-group full-width">
-                            <label>One-Minute Video (Mandatory)</label>
+                            <label>One-Minute Video (Mandatory) <span style={{ color: 'red' }}>*</span></label>
                             <p className="field-hint">
                                 Upload a video (max 60s) introducing yourself, your LGA, and why you should be selected.
                             </p>
@@ -314,12 +405,12 @@ const ApplicationForm = () => {
                         </p>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Full Name Signature</label>
-                                <input type="text" name="declarationName" value={formData.declarationName} onChange={handleChange} placeholder="Type full name to sign" />
+                                <label>Full Name Signature <span style={{ color: 'red' }}>*</span></label>
+                                <input type="text" name="declarationName" value={formData.declarationName} onChange={handleChange} placeholder="Type full name to sign" required />
                             </div>
                             <div className="form-group">
-                                <label>Date</label>
-                                <input type="date" name="declarationDate" value={formData.declarationDate} onChange={handleChange} />
+                                <label>Date <span style={{ color: 'red' }}>*</span></label>
+                                <input type="date" name="declarationDate" value={formData.declarationDate} onChange={handleChange} required />
                             </div>
                         </div>
 
@@ -346,14 +437,38 @@ const ApplicationForm = () => {
         // essentially handled by the Preloader component's logic.
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setIsSubmitting(true);
-        // Simulate network request
-        setTimeout(() => {
+        try {
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+            const response = await fetch(`${apiUrl}/applications`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Submission failed:', errorData);
+                showToast(errorData.message || 'Submission failed. Please check your inputs.', 'error');
+                setIsSubmitting(false);
+                return;
+            }
+
+            const data = await response.json();
+
+            setReferenceId(data.application.reference_id);
             setIsSubmitting(false);
             setIsSubmitted(true);
             window.scrollTo(0, 0);
-        }, 3000);
+        } catch (error) {
+            console.error('Error submitting application:', error);
+            showToast('Network error. Please check your internet connection.', 'error');
+            setIsSubmitting(false);
+        }
     };
 
     if (isLoading) {
@@ -399,7 +514,7 @@ const ApplicationForm = () => {
                     </p>
                     <div style={{ padding: '1.5rem', border: '1px dashed #333', borderRadius: '4px', marginBottom: '3rem' }}>
                         <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Application Reference ID</p>
-                        <p style={{ fontSize: '1.5rem', fontFamily: 'monospace', color: 'white' }}>KOGI-{Math.floor(Math.random() * 100000).toString().padStart(6, '0')}</p>
+                        <p style={{ fontSize: '1.5rem', fontFamily: 'monospace', color: 'white' }}>{referenceId}</p>
                     </div>
                     <p style={{ color: '#666', marginBottom: '2rem' }}>If shortlisted, you will be contacted via email within 14 days.</p>
                     <button className="btn btn-outline" onClick={() => navigate('/')}>Return Home</button>
@@ -472,6 +587,14 @@ const ApplicationForm = () => {
                 </form>
 
             </div>
+
+            {/* Toast Notification */}
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                isVisible={toast.isVisible}
+                onClose={closeToast}
+            />
 
             <style>{`
                 .form-step {
