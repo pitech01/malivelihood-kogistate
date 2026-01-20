@@ -13,28 +13,42 @@ const Hero = () => {
             paddingTop: '80px',
             overflow: 'hidden'
         }}>
-            {/* Background Image with Filter */}
+            {/* Background Image with Slow Zoom (Ken Burns Effect) */}
+            <motion.div
+                initial={{ scale: 1 }}
+                animate={{ scale: 1.1 }}
+                transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundImage: `url(${heroBg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'grayscale(100%) contrast(1.1)',
+                    zIndex: 0
+                }}
+            />
+
+            {/* Luxurious Gradient Overlay */}
             <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundImage: `url(${heroBg})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'grayscale(100%) contrast(1.2)',
+                background: 'radial-gradient(circle at center, rgba(5,5,5,0.7) 0%, rgba(0,0,0,0.95) 100%)', // Vignette for focus
                 zIndex: 0
             }}></div>
-
-            {/* Dark Overlay */}
             <div style={{
                 position: 'absolute',
-                top: 0,
+                bottom: 0,
                 left: 0,
                 width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, 0.91)', // Strong dark overlay
+                height: '40%',
+                background: 'linear-gradient(to top, #050505 0%, transparent 100%)', // Seamless blend with next section
                 zIndex: 0
             }}></div>
 
@@ -43,14 +57,8 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.3em',
-                        marginBottom: '1.5rem',
-                        color: '#fff',
-                        fontWeight: '600',
-                        fontSize: '1rem'
-                    }}
+                    className="title-sm"
+                    style={{ color: '#fff' }}
                 >
                     Malivelihood | Kogi State
                 </motion.h5>
@@ -59,15 +67,12 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    className="title-lg"
                     style={{
-                        fontSize: 'clamp(3rem, 5vw, 5rem)',
-                        fontWeight: '800',
-                        lineHeight: '1.1',
-                        marginBottom: '2rem',
-                        textTransform: 'uppercase',
-                        maxWidth: '1000px',
+                        maxWidth: '1200px', // Wider to prevent too many line breaks
                         marginLeft: 'auto',
-                        marginRight: 'auto'
+                        marginRight: 'auto',
+                        letterSpacing: '-0.02em'
                     }}
                 >
                     Empowering Kogi Youths Through <span style={{ color: '#aaa' }}>Craftsmanship</span>
@@ -88,7 +93,8 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                    style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}
+                    className="hero-buttons"
+                    style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}
                 >
                     <a href="#apply" className="btn btn-primary" style={{ padding: '1.2rem 3rem', fontSize: '1rem' }}>
                         Apply Now
@@ -98,7 +104,7 @@ const Hero = () => {
                     </a>
                 </motion.div>
             </div>
-        </section>
+        </section >
     );
 };
 

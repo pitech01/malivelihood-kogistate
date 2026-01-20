@@ -175,15 +175,48 @@ textarea:focus {
   }
 
   .title-lg {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+    /* Smaller for mobile */
+    margin-bottom: 1.5rem;
   }
 
   .title-md {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .title-sm {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+  }
+
+  .text-lead {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Hero Section Mobile Adjustments */
+  #hero {
+    padding-top: 100px !important;
+    /* Move content down so it's not under navbar */
+    min-height: 100dvh;
+    /* Dynamic view height */
+    height: auto !important;
   }
 
   .mobile-toggle {
     display: block !important;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 2rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 1rem 0 !important;
+    text-align: center;
   }
 
   .desktop-menu {
