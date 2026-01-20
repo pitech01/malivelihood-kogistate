@@ -7,7 +7,7 @@ const AboutFull = () => {
         <section id="about" className="section" style={{ padding: '0' }}> {/* No padding on section to allow full bleed */}
 
             {/* Split Section 1: Background & Image */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))' }}>
+            <div className="grid-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))' }}>
 
                 {/* Content Side */}
                 <motion.div

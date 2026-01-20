@@ -6,7 +6,7 @@ const Career = () => {
     return (
         <section id="career" className="section" style={{ padding: '0', background: '#000' }}>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))' }}>
+            <div className="grid-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))' }}>
                 {/* Image Left */}
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}

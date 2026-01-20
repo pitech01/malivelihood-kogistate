@@ -50,9 +50,43 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Styles would go here properly with media queries in CSS, 
-          but for now we rely on the container max-width and clean layout */}
-    </nav>
+
+      {/* Mobile Menu Overlay */}
+      {
+        isOpen && (
+          <div className="mobile-menu-overlay" style={{
+            position: 'fixed',
+            top: '80px', // Below navbar
+            left: 0,
+            width: '100%',
+            height: 'calc(100vh - 80px)',
+            backgroundColor: 'rgba(0,0,0,0.98)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '2rem',
+            zIndex: 999
+          }}>
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  fontSize: '1.5rem',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  color: 'white'
+                }}
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </nav >
   );
 };
 

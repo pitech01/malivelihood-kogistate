@@ -20,7 +20,7 @@ const Footer = () => {
             {/* Main Footer Content */}
             <div className="container" style={{ padding: '80px 5% 40px' }}>
                 {/* 3-Column Grid for Info */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
+                <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
 
                     {/* Column 1: Brand & Mission */}
                     <div>
