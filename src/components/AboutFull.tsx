@@ -1,5 +1,5 @@
 
-import seminarImg from '../assets/seminar.png';
+import seminarImg from '../assets/seminar_lecture.png';
 import { motion } from 'framer-motion';
 
 const AboutFull = () => {
