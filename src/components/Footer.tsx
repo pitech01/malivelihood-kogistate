@@ -124,7 +124,7 @@ const Footer = () => {
             {/* Copyright */}
             <div style={{ borderTop: '1px solid #1a1a1a', padding: '2rem 5%' }}>
                 <div className="container" style={{ display: 'flex', justifyContent: 'space-between', color: '#444', fontSize: '0.9rem', flexWrap: 'wrap', padding: 0 }}>
-                    <p>© {new Date().getFullYear()} Malivelihood x Kogi State Govt. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Malivelihood | Kogi State Govt. All rights reserved.</p>
                     <div style={{ display: 'flex', gap: '2rem' }}>
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Use</a>

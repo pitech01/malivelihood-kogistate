@@ -1,10 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/example/public_html/
-    # If your cPanel supports Node.js and you want to build on the server, uncomment the lines below:
-    # - npm install
-    # - npm run build
-    
-    # Copy the built files from the 'dist' directory to the public_html directory
-    - /bin/cp -R dist/* $DEPLOYPATH
+    - export DEPLOYPATH=/home/malivelihood/public_html/
+    # Copy all contents from the dist folder explicitly
+    - /bin/cp -R dist/. $DEPLOYPATH

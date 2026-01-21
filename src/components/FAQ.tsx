@@ -3,8 +3,8 @@
 const FAQ = () => {
     const faqs = [
         {
-            q: "Is the programme free?",
-            a: "The Programme is fully sponsored by the Kogi State Government."
+            q: "Is the programme free? ",
+            a: "Yes. The program is fully sponsored by Kogi state government"
         },
         {
             q: "Do I need prior experience?",
