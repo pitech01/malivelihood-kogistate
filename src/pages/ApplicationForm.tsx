@@ -65,6 +65,14 @@ const ApplicationForm = () => {
         declarationDate: ''
     });
 
+    const [files, setFiles] = useState<{ [key: string]: File | null }>({
+        idCard: null,
+        indigeneProof: null,
+        passportPhoto: null,
+        cv: null,
+        video: null
+    });
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => {
@@ -84,6 +92,12 @@ const ApplicationForm = () => {
 
             return newData;
         });
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
+        if (e.target.files && e.target.files[0]) {
+            setFiles(prev => ({ ...prev, [fieldName]: e.target.files![0] }));
+        }
     };
 
     const validateStep = (currentStep: number) => {
@@ -130,6 +144,18 @@ const ApplicationForm = () => {
             case 6: // Availability
                 if (!d.available || !d.comply || !d.relocate) {
                     showToast("Please answer all commitment questions.", "warning");
+                    return false;
+                }
+                return true;
+            case 7: // Documents
+                if (!files.idCard || !files.indigeneProof || !files.passportPhoto) {
+                    showToast("Please upload all required documents (ID, Indigene Proof, Passport Photo).", "warning");
+                    return false;
+                }
+                return true;
+            case 8: // Video
+                if (!files.video) {
+                    showToast("Please upload your one-minute video.", "warning");
                     return false;
                 }
                 return true;
@@ -357,24 +383,50 @@ const ApplicationForm = () => {
                         <p className="field-hint" style={{ marginBottom: '2rem' }}>Please upload PDF or JPG files.</p>
 
                         <div className="form-grid">
-                            {[
-                                { label: "Valid Identification (ID/Passport/Voter's Card) *", accept: ".pdf,.jpg,.jpeg,.png" },
-                                { label: "Proof of Kogi State Indigene Status *", accept: ".pdf,.jpg,.jpeg,.png" },
-                                { label: "Recent Passport Photograph *", accept: ".jpg,.jpeg,.png" },
-                                { label: "Curriculum Vitae (Optional)", accept: ".pdf,.doc,.docx" }
-                            ].map((doc, idx) => (
-                                <div className="form-group" key={idx}>
-                                    <label>{doc.label}</label>
-                                    <div className="custom-file-upload">
-                                        <input type="file" id={`file-${idx}`} accept={doc.accept} style={{ display: 'none' }} />
-                                        <label htmlFor={`file-${idx}`} className="file-label">
-                                            <span style={{ fontSize: '1.5rem', marginBottom: '0.5rem', display: 'block' }}>📂</span>
-                                            <span>Click to Upload File</span>
-                                            <span style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem', display: 'block' }}>{doc.accept.replace(/\./g, ' ').toUpperCase()}</span>
-                                        </label>
-                                    </div>
+                            <div className="form-group">
+                                <label>Valid Identification (ID/Passport/Voter's Card) <span style={{ color: 'red' }}>*</span></label>
+                                <div className="custom-file-upload">
+                                    <input type="file" id="file-idCard" accept=".pdf,.jpg,.jpeg,.png" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'idCard')} />
+                                    <label htmlFor="file-idCard" className="file-label">
+                                        <span style={{ fontSize: '1.5rem', marginBottom: '0.5rem', display: 'block' }}>{files.idCard ? '✅' : '📂'}</span>
+                                        <span>{files.idCard ? files.idCard.name : 'Click to Upload File'}</span>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem', display: 'block' }}>PDF, JPG, PNG</span>
+                                    </label>
                                 </div>
-                            ))}
+                            </div>
+                            <div className="form-group">
+                                <label>Proof of Kogi State Indigene Status <span style={{ color: 'red' }}>*</span></label>
+                                <div className="custom-file-upload">
+                                    <input type="file" id="file-indigeneProof" accept=".pdf,.jpg,.jpeg,.png" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'indigeneProof')} />
+                                    <label htmlFor="file-indigeneProof" className="file-label">
+                                        <span style={{ fontSize: '1.5rem', marginBottom: '0.5rem', display: 'block' }}>{files.indigeneProof ? '✅' : '📂'}</span>
+                                        <span>{files.indigeneProof ? files.indigeneProof.name : 'Click to Upload File'}</span>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem', display: 'block' }}>PDF, JPG, PNG</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>Recent Passport Photograph <span style={{ color: 'red' }}>*</span></label>
+                                <div className="custom-file-upload">
+                                    <input type="file" id="file-passportPhoto" accept=".jpg,.jpeg,.png" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'passportPhoto')} />
+                                    <label htmlFor="file-passportPhoto" className="file-label">
+                                        <span style={{ fontSize: '1.5rem', marginBottom: '0.5rem', display: 'block' }}>{files.passportPhoto ? '✅' : '📂'}</span>
+                                        <span>{files.passportPhoto ? files.passportPhoto.name : 'Click to Upload File'}</span>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem', display: 'block' }}>JPG, PNG</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>Curriculum Vitae (Optional)</label>
+                                <div className="custom-file-upload">
+                                    <input type="file" id="file-cv" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'cv')} />
+                                    <label htmlFor="file-cv" className="file-label">
+                                        <span style={{ fontSize: '1.5rem', marginBottom: '0.5rem', display: 'block' }}>{files.cv ? '✅' : '📂'}</span>
+                                        <span>{files.cv ? files.cv.name : 'Click to Upload File'}</span>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem', display: 'block' }}>PDF, DOC</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </motion.div>
                 );
@@ -388,8 +440,9 @@ const ApplicationForm = () => {
                                 Upload a video (max 60s) introducing yourself, your LGA, and why you should be selected.
                             </p>
                             <div className="upload-box" style={{ border: '2px dashed #444', padding: '3rem', textAlign: 'center', marginTop: '1rem', borderRadius: '4px' }}>
-                                <input type="file" accept="video/*" style={{ display: 'none' }} id="video-upload" />
-                                <label htmlFor="video-upload" className="btn btn-outline">Select Video File</label>
+                                <input type="file" accept="video/*" style={{ display: 'none' }} id="video-upload" onChange={(e) => handleFileChange(e, 'video')} />
+                                <label htmlFor="video-upload" className="btn btn-outline" style={{ display: 'inline-block' }}>{files.video ? 'Change Log ' + files.video.name : 'Select Video File'}</label>
+                                {files.video && <p style={{ color: '#4caf50', marginTop: '0.5rem' }}>Selected: {files.video.name}</p>}
                                 <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#888' }}>Max size: 50MB</p>
                             </div>
                         </div>
@@ -441,13 +494,28 @@ const ApplicationForm = () => {
         setIsSubmitting(true);
         try {
             const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+
+            const submitData = new FormData();
+
+            // Append Text Data
+            Object.entries(formData).forEach(([key, value]) => {
+                submitData.append(key, value);
+            });
+
+            // Append Files
+            if (files.idCard) submitData.append('idCard', files.idCard);
+            if (files.indigeneProof) submitData.append('indigeneProof', files.indigeneProof);
+            if (files.passportPhoto) submitData.append('passportPhoto', files.passportPhoto);
+            if (files.cv) submitData.append('cv', files.cv);
+            if (files.video) submitData.append('video', files.video);
+
             const response = await fetch(`${apiUrl}/applications`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    // 'Content-Type': 'multipart/form-data' // DO NOT SET CONTENT-TYPE MANUALLY WITH FETCH AND FORMDATA
                 },
-                body: JSON.stringify(formData)
+                body: submitData
             });
 
             if (!response.ok) {

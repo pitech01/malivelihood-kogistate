@@ -26,23 +26,91 @@ const AdminLayout = () => {
         setIsSidebarOpen(false);
     }, [location.pathname]);
 
-    if (isLoading) {
-        return <Preloader onComplete={() => setIsLoading(false)} />;
-    }
+    // Notifications state
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+    // Fetch Notifications
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            const token = localStorage.getItem('adminToken');
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+            try {
+                const response = await fetch(`${apiUrl}/admin/notifications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setNotifications(data);
+                }
+            } catch (error) {
+                console.error('Error fetching notifications', error);
+            }
+        };
+        fetchNotifications();
+    }, [location.pathname]);
+
+    // Close notifications on outside click (simple version)
+    useEffect(() => {
+        const handleClickOutside = () => setIsNotificationsOpen(false);
+        if (isNotificationsOpen) {
+            document.addEventListener('click', handleClickOutside);
+        }
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [isNotificationsOpen]);
+
+
 
     const menuItems = [
         { name: 'Dashboard', path: '/admin/dashboard', icon: <Icons.Dashboard /> },
         { name: 'Applicants', path: '/admin/applicants', icon: <Icons.Users /> },
-        { name: 'Email Templates', path: '/admin/templates', icon: <Icons.Mail /> },
         { name: 'Settings', path: '/admin/settings', icon: <Icons.Settings /> },
     ];
 
-    const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) {
+    // Logout Modal State
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+    // Import motion (assuming framer-motion is used elsewhere, if not we'll use inline styles/css transitions, 
+    // but based on previous context, framer-motion is available. If not, I'll fallback to conditionally rendering with simple styles.)
+    // Importing motion at the top: import { motion, AnimatePresence } from 'framer-motion'; 
+    // NOTE for tool: I cannot change imports easily here without a multi-chunk replace. 
+    // I will assume AnimatePresence/motion are available or I will add them if needed. 
+    // Actually, looking at the file imports, they are NOT imported. 
+    // I will use standard React conditional rendering with inline styles for simplicity and reliability if imports are tricky, 
+    // OR I will fix imports in a separate call. 
+    // Wait, the USER request asks to "make the ui better", so animations are good.
+    // I will add the import in a separate block if I can, or use style injection.
+    // Let's stick to inline styles with a simple transition class for now or assume I can add the import.
+    // I will use a simple overlay system similar to the notifications or the existing sidebar overlay, but center aligned.
+
+    const handleLogoutClick = () => {
+        setIsLogoutModalOpen(true);
+    };
+
+    const confirmLogout = async () => {
+        const token = localStorage.getItem('adminToken');
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+        try {
+            await fetch(`${apiUrl}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+        } catch (error) {
+            console.error('Logout error', error);
+        } finally {
             localStorage.removeItem('adminAuth');
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
             navigate('/admin-login');
         }
     };
+
+    if (isLoading) {
+        return <Preloader onComplete={() => setIsLoading(false)} />;
+    }
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: '#050505', color: 'white', fontFamily: "'Inter', sans-serif" }}>
@@ -68,7 +136,71 @@ const AdminLayout = () => {
                 .mobile-menu-btn {
                     display: none;
                 }
+                /* Modal Animation */
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes scaleIn {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
             `}</style>
+
+            {/* Logout Modal */}
+            {isLogoutModalOpen && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                    background: 'rgba(0,0,0,0.8)', zIndex: 1000,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    animation: 'fadeIn 0.2s ease-out'
+                }} onClick={() => setIsLogoutModalOpen(false)}>
+                    <div style={{
+                        background: '#111', border: '1px solid #222', borderRadius: '12px',
+                        padding: '2rem', width: '90%', maxWidth: '400px',
+                        textAlign: 'center', boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                        animation: 'scaleIn 0.2s ease-out'
+                    }} onClick={(e) => e.stopPropagation()}>
+                        <div style={{
+                            width: '60px', height: '60px', background: 'rgba(239, 68, 68, 0.1)',
+                            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            margin: '0 auto 1.5rem', color: '#ef4444'
+                        }}>
+                            <Icons.LogOut />
+                        </div>
+                        <h3 style={{ margin: '0 0 0.5rem', color: 'white', fontSize: '1.25rem' }}>Log out?</h3>
+                        <p style={{ margin: '0 0 1.5rem', color: '#888', lineHeight: '1.5' }}>
+                            Are you sure you want to log out of the admin panel? You will need to sign in again to access the dashboard.
+                        </p>
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                            <button
+                                onClick={() => setIsLogoutModalOpen(false)}
+                                style={{
+                                    flex: 1, padding: '0.8rem', borderRadius: '6px', border: '1px solid #333',
+                                    background: 'transparent', color: 'white', fontWeight: 500, cursor: 'pointer',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.background = '#222'}
+                                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmLogout}
+                                style={{
+                                    flex: 1, padding: '0.8rem', borderRadius: '6px', border: 'none',
+                                    background: '#ef4444', color: 'white', fontWeight: 500, cursor: 'pointer',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.background = '#dc2626'}
+                                onMouseOut={(e) => e.currentTarget.style.background = '#ef4444'}
+                            >
+                                Log out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Sidebar Overlay */}
             {isSidebarOpen && (
@@ -136,7 +268,7 @@ const AdminLayout = () => {
                 </nav>
 
                 <div style={{ padding: '1.5rem', borderTop: '1px solid #222' }}>
-                    <button onClick={handleLogout} style={{
+                    <button onClick={handleLogoutClick} style={{
                         display: 'flex', alignItems: 'center', gap: '0.8rem',
                         background: 'transparent', border: 'none', color: '#666',
                         cursor: 'pointer', width: '100%', padding: '0.5rem 0',
@@ -155,19 +287,9 @@ const AdminLayout = () => {
             <main className="admin-main" style={{ marginLeft: '260px', flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
 
                 {/* Topbar */}
-                <header style={{
-                    height: '70px',
-                    background: '#0a0a0a',
-                    borderBottom: '1px solid #222',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0 2rem',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 5
-                }}>
+                <header style={{ height: '70px', background: '#0a0a0a', borderBottom: '1px solid #222', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem', position: 'sticky', top: 0, zIndex: 5 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        {/* ... mobile menu btn + title ... */}
                         <button
                             className="mobile-menu-btn"
                             onClick={() => setIsSidebarOpen(true)}
@@ -181,14 +303,62 @@ const AdminLayout = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <div style={{ position: 'relative', cursor: 'pointer', color: '#999' }}>
+                        {/* Notification Bell */}
+                        <div
+                            style={{ position: 'relative', cursor: 'pointer', color: '#999' }}
+                            onClick={(e) => { e.stopPropagation(); setIsNotificationsOpen(!isNotificationsOpen); }}
+                        >
                             <Icons.Bell />
-                            <span style={{
-                                position: 'absolute', top: '-5px', right: '-5px',
-                                background: 'white', color: 'black',
-                                fontSize: '0.6rem', padding: '2px 5px', borderRadius: '10px',
-                                fontWeight: 'bold'
-                            }}>3</span>
+                            {notifications.length > 0 && (
+                                <span style={{
+                                    position: 'absolute', top: '-5px', right: '-5px',
+                                    background: 'white', color: 'black',
+                                    fontSize: '0.6rem', padding: '2px 5px', borderRadius: '10px',
+                                    fontWeight: 'bold'
+                                }}>{notifications.length}</span>
+                            )}
+
+                            {/* Dropdown */}
+                            {isNotificationsOpen && (
+                                <div
+                                    onClick={(e) => e.stopPropagation()}
+                                    style={{
+                                        position: 'absolute', top: '140%', right: '-10px',
+                                        width: '320px', background: '#0a0a0a', border: '1px solid #222',
+                                        borderRadius: '8px', zIndex: 100,
+                                        boxShadow: '0 10px 30px rgba(0,0,0,0.8)', overflow: 'hidden'
+                                    }}
+                                >
+                                    <div style={{ padding: '1rem', borderBottom: '1px solid #222', background: '#111' }}>
+                                        <h4 style={{ margin: 0, color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>Notifications</h4>
+                                    </div>
+                                    <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                                        {notifications.length === 0 ? (
+                                            <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+                                                <p style={{ margin: 0 }}>No new notifications</p>
+                                            </div>
+                                        ) : (
+                                            notifications.map(notif => (
+                                                <div key={notif.id} style={{
+                                                    padding: '1rem', borderBottom: '1px solid #222',
+                                                    cursor: 'default', transition: 'background 0.2s',
+                                                    display: 'flex', gap: '10px'
+                                                }}>
+                                                    <div style={{ minWidth: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', marginTop: '6px' }}></div>
+                                                    <div>
+                                                        <p style={{ margin: '0 0 0.3rem', color: '#e5e5e5', fontSize: '0.85rem', lineHeight: '1.4' }}>
+                                                            New application received from <strong>{notif.full_name}</strong>
+                                                        </p>
+                                                        <p style={{ margin: 0, color: '#666', fontSize: '0.75rem' }}>
+                                                            {new Date(notif.created_at).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                             <div style={{ textAlign: 'right' }}>

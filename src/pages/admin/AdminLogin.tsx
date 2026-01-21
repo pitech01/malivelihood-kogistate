@@ -13,21 +13,42 @@ const AdminLogin = () => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
 
-        // Mock authentication
-        setTimeout(() => {
-            if (credentials.email === 'admin@kogi.gov.ng' && credentials.password === 'admin123') {
-                localStorage.setItem('adminAuth', 'true');
-                navigate('/admin/dashboard');
-            } else {
-                setError('Invalid credentials. Please try again.');
-                setIsLoading(false);
+        try {
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+            const response = await fetch(`${apiUrl}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(credentials)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Login failed');
             }
-        }, 1500);
+
+            const data = await response.json();
+
+            // Store token and user info
+            localStorage.setItem('adminToken', data.token);
+            localStorage.setItem('adminUser', JSON.stringify(data.user)); // Optional: store user details
+            localStorage.setItem('adminAuth', 'true'); // Keep this for now if used elsewhere for quick checks
+
+            navigate('/admin/dashboard');
+
+        } catch (err: any) {
+            console.error('Login error:', err);
+            setError(err.message || 'Invalid credentials. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

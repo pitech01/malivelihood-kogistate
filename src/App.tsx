@@ -9,6 +9,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './components/admin/AdminLayout';
 import DashboardHome from './pages/admin/DashboardHome';
 import ApplicantsList from './pages/admin/ApplicantsList';
+import Settings from './pages/admin/Settings';
 import './App.css';
 
 // Protected Route Wrapper
@@ -35,8 +36,7 @@ const AppContent = () => {
         <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="applicants" element={<ApplicantsList />} />
-          <Route path="templates" element={<div style={{ padding: '2rem' }}>Email Templates coming soon...</div>} />
-          <Route path="settings" element={<div style={{ padding: '2rem' }}>Settings coming soon...</div>} />
+          <Route path="settings" element={<Settings />} />
           {/* Default redirect to dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
