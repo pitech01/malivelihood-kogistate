@@ -96,7 +96,28 @@ const ApplicationForm = () => {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
         if (e.target.files && e.target.files[0]) {
-            setFiles(prev => ({ ...prev, [fieldName]: e.target.files![0] }));
+            const file = e.target.files[0];
+            let isValid = true;
+            let limit = 0;
+            let limitText = '';
+
+            if (fieldName === 'video') {
+                limit = 20 * 1024 * 1024; // 20MB
+                limitText = '20MB';
+            } else {
+                limit = 3 * 1024 * 1024; // 3MB
+                limitText = '3MB';
+            }
+
+            if (file.size > limit) {
+                showToast(`File size too large. Max allowed size is ${limitText}.`, 'error');
+                e.target.value = ''; // Reset input
+                isValid = false;
+            }
+
+            if (isValid) {
+                setFiles(prev => ({ ...prev, [fieldName]: file }));
+            }
         }
     };
 
@@ -380,7 +401,7 @@ const ApplicationForm = () => {
                 return (
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="form-step">
                         <h2 className="title-md">Section G: Document Uploads</h2>
-                        <p className="field-hint" style={{ marginBottom: '2rem' }}>Please upload PDF or JPG files.</p>
+                        <p className="field-hint" style={{ marginBottom: '2rem' }}>Please upload PDF or JPG files. Max size: 3MB per file.</p>
 
                         <div className="form-grid">
                             <div className="form-group">
@@ -443,7 +464,7 @@ const ApplicationForm = () => {
                                 <input type="file" accept="video/*" style={{ display: 'none' }} id="video-upload" onChange={(e) => handleFileChange(e, 'video')} />
                                 <label htmlFor="video-upload" className="btn btn-outline" style={{ display: 'inline-block' }}>{files.video ? 'Change Log ' + files.video.name : 'Select Video File'}</label>
                                 {files.video && <p style={{ color: '#4caf50', marginTop: '0.5rem' }}>Selected: {files.video.name}</p>}
-                                <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#888' }}>Max size: 50MB</p>
+                                <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#888' }}>Max size: 20MB</p>
                             </div>
                         </div>
                     </motion.div>

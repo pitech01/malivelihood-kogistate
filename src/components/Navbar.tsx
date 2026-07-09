@@ -20,7 +20,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container navbar-container">
         <a href="#" style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logo} alt="Malivelihood | Kogi State" className="navbar-logo" />
+          <img src={logo} alt="Kogi State | Malivelihood" className="navbar-logo" />
         </a>
 
         {/* Desktop Menu */}

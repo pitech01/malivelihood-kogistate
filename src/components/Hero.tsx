@@ -61,7 +61,7 @@ const Hero = () => {
                     className="title-sm"
                     style={{ color: '#fff' }}
                 >
-                    Malivelihood | Kogi State
+                    Kogi State | Malivelihood
                 </motion.h5>
 
                 <motion.h1

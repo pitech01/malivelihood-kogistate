@@ -379,3 +379,55 @@ textarea:focus {
     height: calc(100vh - 70px);
   }
 }
+
+/* Admin Responsiveness Utilities */
+.admin-toolbar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #111;
+  border-radius: 8px;
+  border: 1px solid #222;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-toolbar>div {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .admin-toolbar input,
+  .admin-toolbar select,
+  .admin-toolbar button {
+    width: 100% !important;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .full-width-on-mobile {
+    grid-column: span 1 !important;
+  }
+}
